@@ -1,0 +1,54 @@
+<VirtualHost *:80>
+
+  ServerName &DOMAIN&
+
+  RewriteEngine on
+  RewriteCond %{SERVER_PORT} !^443
+  RewriteRule ^/?(.*)$ https://%{SERVER_NAME}/$1 [L,R]
+
+</VirtualHost>
+
+<VirtualHost *:443>
+
+  ServerName &DOMAIN&
+  
+  
+  SSLCertificateKeyFile "/etc/letsencrypt/live/&DOMAIN&/privkey.pem"
+  SSLCertificateChainFile "/etc/letsencrypt/live/&DOMAIN&/chain.pem"
+  SSLCertificateFile "/etc/letsencrypt/live/&DOMAIN&/cert.pem"
+  SSLEngine on
+  SetEnv HTTPS on
+  SSLProxyEngine on
+
+  # Vhost docroot
+  DocumentRoot "/var/www/html"
+
+  # Directories, there should at least be a declaration for /var/www/html
+
+  <Location />
+    Require valid-user
+    AuthType Mellon
+    MellonEnable "auth"
+    MellonEndpointPath "/mellon"
+    MellonSPPrivateKeyFile "/etc/apache2/mellon/&OUTFILE&.key"
+    MellonSPCertFile "/etc/apache2/mellon/&OUTFILE&.cert"
+    MellonSPMetadataFile "/etc/apache2/mellon/&OUTFILE&.xml"
+    MellonIDPMetadataFile "/etc/apache2/mellon/idp-metadata.xml"
+  </Location>
+
+  # Logging
+  ErrorLog "/var/log/apache2/&DOMAIN&_error.log"
+  ServerSignature Off
+  CustomLog "/var/log/apache2/&DOMAIN&_access.log" combined 
+
+  # Proxy rules
+  ProxyRequests Off
+  ProxyPreserveHost Off
+  ProxyPass "&PROXY_PATH&" "&PROXY_REMOTE_URL&" disablereuse=On
+  ProxyPassReverse "&PROXY_PATH&" "&PROXY_REMOTE_URL&"
+
+  # Rewrite rules
+  RewriteEngine &REWRITE_ENGINE&
+  &REWRITE_RULE&
+
+</VirtualHost>
