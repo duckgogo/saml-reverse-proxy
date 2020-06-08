@@ -9,7 +9,7 @@ Protecting internal applications with a SAML-aware reverse-proxy
     -it \
     -p 80:80 \
     -p 443:443 \
-    -e OMAIN=www.example.com \
+    -e DOMAIN=www.example.com \
     -e IDP_ENTITY_ID=aws-elasticsearch \
     -e SAML_METADATA_URL=https://example.com/FederationMetadata/2007-06/FederationMetadata.xml \
     -e PROXY_REMOTE_URL=http://elasticsearch.example.com/_plugin/kibana \
