@@ -1,7 +1,7 @@
 OUTFILE="$(echo "$IDP_ENTITY_ID" | sed 's/[^0-9A-Za-z.]/_/g' | sed 's/__*/_/g')"
 if [ ! -f "/etc/apache2/mellon/${OUTFILE}.key" ] || [ ! -f "/etc/apache2/mellon/${OUTFILE}.cert" ] || [ ! -f "/etc/apache2/mellon/${OUTFILE}.xml" ]; then
     cd /etc/apache2/mellon
-    bash /tmp/mellon_create_metadata.sh "${IDP_ENTITY_ID}" "${SCHEME}://${DOMAIN}/mellon"
+    bash /tmp/mellon_create_metadata.sh "${IDP_ENTITY_ID}" "https://${DOMAIN}/mellon"
 fi
 
 if [ ! -f "/etc/apache2/mellon/idp-metadata.xml" ]; then
